@@ -113,9 +113,9 @@ const MonetizationDashboard = ({ userId = 'user123' }) => {
             ? 'border-green-600/50 bg-gradient-to-br from-green-900/20 to-emerald-900/20'
             : 'border-red-600/50 bg-gradient-to-br from-red-900/20 to-rose-900/20'
         }`}>
-          <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10 blur-3xl ${
+          <div className={`absolute top-0 right-0 w-40 h-40 rounded-full opacity-10 blur-3xl ${
             isMonetized ? 'bg-green-600' : 'bg-red-600'
-          }"></div>
+          }`}></div>
 
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">

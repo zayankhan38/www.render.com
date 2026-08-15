@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronUp, ChevronDown, Heart, MessageCircle, Share2, Volume2, VolumeX, Repeat2, MoreVertical } from 'lucide-react';
+import { ChevronUp, ChevronDown, Heart, MessageCircle, Share2, Volume2, VolumeX, Repeat2, MoveVertical as MoreVertical } from 'lucide-react';
 
 /**
  * Professional TikTok-Style Shorts Player
@@ -34,7 +34,7 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
       likes: 245000,
       comments: 12500,
       shares: 8900,
-      avatar: 'https://via.placeholder.com/48',
+      avatar: 'C1',
       verified: true
     },
     {
@@ -46,7 +46,7 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
       likes: 356000,
       comments: 18900,
       shares: 12300,
-      avatar: 'https://via.placeholder.com/48',
+      avatar: 'C2',
       verified: true
     },
     {
@@ -58,7 +58,7 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
       likes: 175000,
       comments: 9200,
       shares: 6400,
-      avatar: 'https://via.placeholder.com/48',
+      avatar: 'C3',
       verified: false
     }
   ];
@@ -151,8 +151,7 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
       <div className="relative w-full max-w-sm h-screen bg-neutral-950 flex flex-col">
         {/* Video Container */}
         <div className="flex-1 bg-black relative group overflow-hidden">
-          {/* Placeholder Video */}
-          <div className="w-full h-full bg-gradient-to-br from-neutral-900 to-black flex items-center justify-center relative">
+          <div className="w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-black flex items-center justify-center relative">
             <video
               ref={videoRef}
               loop={isLooping}
@@ -160,12 +159,18 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleLoadedMetadata}
               className="w-full h-full object-cover"
-              src="https://www.w3schools.com/html/mov_bbb.mp4"
               autoPlay
             />
 
             {/* Gradient Overlay (for readability) */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="text-center">
+                <p className="text-6xl mb-4">🎬</p>
+                <p className="text-white text-lg font-bold">{short.title}</p>
+                <p className="text-gray-400 text-sm mt-1">Tap play to preview</p>
+              </div>
+            </div>
           </div>
 
           {/* Controls Overlay */}
@@ -212,11 +217,9 @@ const ShortsPlayer = ({ shorts = [], onEngagement }) => {
         {/* Creator Info Section */}
         <div className="bg-gradient-to-t from-black/90 to-transparent p-4 absolute bottom-24 left-0 right-0 z-20">
           <div className="flex items-start gap-3 mb-4">
-            <img
-              src={short.avatar}
-              alt={short.creator}
-              className="w-10 h-10 rounded-full border-2 border-red-600 object-cover"
-            />
+            <div className="w-10 h-10 rounded-full border-2 border-red-600 bg-render-red flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              {short.avatar}
+            </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-white text-sm">{short.creator}</h3>

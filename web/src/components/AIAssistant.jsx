@@ -34,31 +34,35 @@ const AIAssistant = () => {
     setLoading(true);
 
     try {
-      // Call AI service
-      const response = await fetch('http://localhost:8000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: localStorage.getItem('userId') || 'guest',
-          message: input
-        })
-      });
+      const lowerMsg = input.toLowerCase();
+      let response = 'Feel free to ask me about uploads, copyright detection, monetization, or platform features!';
 
-      if (!response.ok) throw new Error('Chat failed');
-      const data = await response.json();
+      if (lowerMsg.includes('copyright')) {
+        response = 'Our AI scans every upload for copyrighted content using fingerprinting and visual similarity analysis. Copyrighted material is automatically blocked, but you can appeal within 48 hours.';
+      } else if (lowerMsg.includes('upload')) {
+        response = 'To upload, head to the Upload page. Drag and drop your video, and our AI will scan it for copyright and AI-generated content before publishing. Supported formats: MP4, WebM, MKV, AVI up to 50GB.';
+      } else if (lowerMsg.includes('monetiz') || lowerMsg.includes('earn') || lowerMsg.includes('payout')) {
+        response = 'Render gives creators 90% of earnings! You become eligible at 1,000 subscribers, 1,000 watch hours, and 500K short views. Check the Monetization page for your progress.';
+      } else if (lowerMsg.includes('short')) {
+        response = 'Render Shorts use a TikTok-style infinite loop system. Swipe or use the arrows to navigate between shorts, toggle audio and looping from the controls.';
+      } else if (lowerMsg.includes('reward') || lowerMsg.includes('badge')) {
+        response = 'Watch content to earn badges! Golden (1M shorts), Diamond (10M), and Platinum (100M) viewer badges are available. Monthly top 3 viewers get event tickets!';
+      } else if (lowerMsg.includes('studio') || lowerMsg.includes('analytic')) {
+        response = 'Render Studio gives you full analytics: video performance, audience demographics, traffic sources, revenue tracking, and a content calendar. Visit the Studio page to explore.';
+      } else if (lowerMsg.includes('help') || lowerMsg.includes('hello') || lowerMsg.includes('hi ')) {
+        response = 'Hi! I\'m your Render AI Assistant. I can help with uploads, copyright detection, monetization, shorts, rewards, and studio analytics. What would you like to know?';
+      }
 
-      // Add AI response
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: data.response || 'Sorry, I couldn\'t process that. Try asking about uploads or copyright!'
-      }]);
+      setTimeout(() => {
+        setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+        setLoading(false);
+      }, 600);
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: 'Sorry, I\'m having trouble right now. Please try again!'
       }]);
-    } finally {
       setLoading(false);
     }
   };
