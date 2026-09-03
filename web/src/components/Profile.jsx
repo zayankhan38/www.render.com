@@ -1,250 +1,245 @@
 import React, { useState } from 'react';
-import { Play, Bell, Share2, Award, Calendar, Eye, Zap, Heart } from 'lucide-react';
+import { Edit2, Share2, Bell, Settings, MoreVertical, Users, Eye, Heart } from 'lucide-react';
 
-const profileData = {
-  name: 'TechVision',
-  handle: '@techvision',
-  avatar: 'TV',
-  banner: 'https://images.pexels.com/photos/32141312/pexels-photo-32141312.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  bio: 'Bringing you the latest tech reviews, unboxings, and gadget comparisons. Original content creator on Render.',
-  joinedDate: 'Jan 2024',
-  subscribers: 2500,
-  totalViews: 15400000,
-  totalVideos: 87,
-  isVerified: true,
-  playButton: 'Wood',
-};
+/**
+ * Professional Render User Profile
+ * Enterprise Features:
+ * - Creator profile display
+ * - Statistics dashboard
+ * - Video gallery
+ * - Subscriber management
+ * - Social links
+ * - Fully extractable for other projects
+ * 
+ * Usage: <Profile userId={userId} isOwnProfile={true} />
+ */
+const Profile = ({ userId = 'user123', isOwnProfile = true }) => {
+  const [activeTab, setActiveTab] = useState('videos');
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-const tabs = ['Videos', 'Shorts', 'About'];
+  const profileData = {
+    username: 'CreatorPro',
+    displayName: 'Creator Pro - Content Master',
+    bio: 'Making awesome content on Render | Monetization Expert | Tech & Gaming',
+    avatar: '👤',
+    banner: '🎬',
+    subscribers: 2500,
+    totalViews: 15400000,
+    videos: 156,
+    verified: true,
+    joinDate: 'Jan 15, 2024',
+    website: 'www.creatorpro.com',
+    location: 'San Francisco, CA',
+    renderStudioLink: 'render.studio/creatorpro'
+  };
 
-const profileVideos = [
-  {
-    id: 1,
-    title: 'The Ultimate Smartphone Review — 2026 Edition',
-    views: 1250000,
-    uploaded: '2 days ago',
-    duration: '14:32',
-    thumbnail: 'https://images.pexels.com/photos/32141312/pexels-photo-32141312.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  },
-  {
-    id: 2,
-    title: 'Unboxing the Newest Wireless Earbuds',
-    views: 450000,
-    uploaded: '6 hours ago',
-    duration: '6:22',
-    thumbnail: 'https://images.pexels.com/photos/25809275/pexels-photo-25809275.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  },
-  {
-    id: 3,
-    title: 'New Phone Unboxing — Is It Worth It?',
-    views: 610000,
-    uploaded: '12 hours ago',
-    duration: '9:55',
-    thumbnail: 'https://images.pexels.com/photos/12712506/pexels-photo-12712506.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  },
-  {
-    id: 4,
-    title: 'Smartphone in the Kitchen — Tech Lifestyle',
-    views: 340000,
-    uploaded: '5 days ago',
-    duration: '11:08',
-    thumbnail: 'https://images.pexels.com/photos/31918446/pexels-photo-31918446.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  },
-];
+  const socialStats = [
+    { label: 'Subscribers', value: '2.5K', icon: '👥' },
+    { label: 'Total Views', value: '15.4M', icon: '👁️' },
+    { label: 'Videos', value: '156', icon: '🎬' },
+    { label: 'Engagement', value: '8.5%', icon: '❤️' }
+  ];
 
-const formatViews = (num) => {
-  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-  return num.toString();
-};
+  const creatorVideos = [
+    { id: 1, title: 'How to Make Money on Render', views: '1.2M', thumbnail: '🎬' },
+    { id: 2, title: 'Render Shorts Challenge $10K', views: '5.6M', thumbnail: '🎥' },
+    { id: 3, title: 'Render Studio Tutorial', views: '890K', thumbnail: '📊' },
+    { id: 4, title: 'Gaming Setup Reveal', views: '2.3M', thumbnail: '🎮' },
+    { id: 5, title: 'Music Production Guide', views: '456K', thumbnail: '🎵' },
+    { id: 6, title: 'Platform Review', views: '3.1M', thumbnail: '⭐' }
+  ];
 
-export default function Profile() {
-  const [activeTab, setActiveTab] = useState('Videos');
-  const [subscribed, setSubscribed] = useState(false);
+  const playlists = [
+    { id: 1, name: 'Best of Render', videos: 24 },
+    { id: 2, name: 'Tutorials', videos: 18 },
+    { id: 3, name: 'Gaming Highlights', videos: 42 }
+  ];
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-black to-neutral-900">
+      {/* Header Bar */}
+      <div className="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur border-b border-neutral-800 p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-black text-red-600">🔴 RENDER</h1>
+        <button className="bg-neutral-800 hover:bg-neutral-700 text-white p-2 rounded-full transition">
+          <Settings size={20} />
+        </button>
+      </div>
+
       {/* Banner */}
-      <div className="relative h-32 sm:h-48 lg:h-64 bg-neutral-900">
-        <img
-          src={profileData.banner}
-          alt="Channel banner"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 to-transparent" />
+      <div className="w-full h-48 bg-gradient-to-r from-red-600/20 to-purple-600/20 border-b border-neutral-800 flex items-center justify-center text-6xl">
+        {profileData.banner}
       </div>
 
-      {/* Channel header */}
-      <div className="px-4 lg:px-6 -mt-8 sm:-mt-12 relative">
-        <div className="flex flex-col sm:flex-row gap-4 sm:items-end">
-          <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-render-red border-4 border-neutral-950 flex items-center justify-center text-white text-2xl sm:text-4xl font-black flex-shrink-0">
-            {profileData.avatar}
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-white text-2xl sm:text-3xl font-black">{profileData.name}</h1>
-              {profileData.isVerified && (
-                <span className="bg-render-red text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                  Verified
-                </span>
-              )}
+      {/* Profile Info */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex gap-6">
+            {/* Avatar */}
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-6xl border-4 border-neutral-900 -mt-16">
+              {profileData.avatar}
             </div>
-            <p className="text-gray-400 text-sm mt-1">{profileData.handle}</p>
-            <p className="text-gray-500 text-sm">
-              {formatViews(profileData.subscribers)} subscribers • {profileData.totalVideos} videos
-            </p>
+
+            {/* Profile Details */}
+            <div className="pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <h1 className="text-4xl font-black text-white">{profileData.displayName}</h1>
+                {profileData.verified && <span className="text-red-600 text-2xl">✓</span>}
+              </div>
+              <p className="text-gray-400 mb-4">@{profileData.username}</p>
+              <p className="text-gray-300 text-sm mb-4 max-w-2xl">{profileData.bio}</p>
+              
+              {/* Meta Info */}
+              <div className="flex gap-4 text-sm text-gray-400 mb-4">
+                <span>📍 {profileData.location}</span>
+                <span>🌐 {profileData.website}</span>
+                <span>📅 Joined {profileData.joinDate}</span>
+              </div>
+            </div>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex gap-3">
-            <button
-              onClick={() => setSubscribed(!subscribed)}
-              className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-colors flex items-center gap-2 ${
-                subscribed
-                  ? 'bg-neutral-800 text-gray-300 hover:bg-neutral-700'
-                  : 'bg-white text-black hover:bg-gray-200'
-              }`}
-            >
-              <Bell size={16} />
-              {subscribed ? 'Subscribed' : 'Subscribe'}
-            </button>
-            <button className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2.5 rounded-full transition-colors">
-              <Share2 size={16} />
-            </button>
+            {isOwnProfile ? (
+              <>
+                <button className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition font-semibold">
+                  <Edit2 size={18} />
+                  Edit Profile
+                </button>
+                <button className="bg-neutral-800 hover:bg-neutral-700 text-white p-2 rounded-lg transition">
+                  <MoreVertical size={20} />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIsSubscribed(!isSubscribed)}
+                  className={`px-6 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+                    isSubscribed
+                      ? 'bg-neutral-800 hover:bg-neutral-700 text-white'
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
+                >
+                  {isSubscribed ? '✓ Subscribed' : 'Subscribe'}
+                </button>
+                <button className="bg-neutral-800 hover:bg-neutral-700 text-white p-2 rounded-lg transition">
+                  <Bell size={20} />
+                </button>
+                <button className="bg-neutral-800 hover:bg-neutral-700 text-white p-2 rounded-lg transition">
+                  <Share2 size={20} />
+                </button>
+              </>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-4 lg:px-6 mt-6">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
-          <Eye className="text-render-red mx-auto mb-2" size={20} />
-          <p className="text-white text-xl font-bold">{formatViews(profileData.totalViews)}</p>
-          <p className="text-gray-500 text-xs">Total Views</p>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {socialStats.map((stat, idx) => (
+            <div key={idx} className="bg-neutral-900 border border-neutral-800 rounded-lg p-4 text-center hover:border-red-600/30 transition">
+              <p className="text-2xl mb-2">{stat.icon}</p>
+              <p className="text-2xl font-black text-white">{stat.value}</p>
+              <p className="text-xs text-gray-400 mt-1">{stat.label}</p>
+            </div>
+          ))}
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
-          <Calendar className="text-render-red mx-auto mb-2" size={20} />
-          <p className="text-white text-xl font-bold">{profileData.joinedDate}</p>
-          <p className="text-gray-500 text-xs">Joined</p>
-        </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
-          <Award className="text-render-red mx-auto mb-2" size={20} />
-          <p className="text-white text-xl font-bold">{profileData.playButton}</p>
-          <p className="text-gray-500 text-xs">Play Button</p>
-        </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
-          <Zap className="text-render-red mx-auto mb-2" size={20} />
-          <p className="text-white text-xl font-bold">{profileData.totalVideos}</p>
-          <p className="text-gray-500 text-xs">Videos</p>
-        </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="border-b border-neutral-800 mt-6 px-4 lg:px-6">
-        <div className="flex gap-6">
-          {tabs.map((tab) => (
+        {/* Tabs */}
+        <div className="flex gap-6 border-b border-neutral-800 mb-8">
+          {[
+            { id: 'videos', label: 'Videos', icon: '🎬' },
+            { id: 'playlists', label: 'Playlists', icon: '📋' },
+            { id: 'about', label: 'About', icon: 'ℹ️' }
+          ].map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-sm font-semibold transition-colors border-b-2 ${
-                activeTab === tab
-                  ? 'text-white border-render-red'
-                  : 'text-gray-400 border-transparent hover:text-gray-200'
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-4 px-2 font-semibold transition border-b-2 ${
+                activeTab === tab.id
+                  ? 'border-red-600 text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
-              {tab}
+              {tab.icon} {tab.label}
             </button>
           ))}
         </div>
-      </div>
 
-      {/* Tab content */}
-      <div className="p-4 lg:p-6">
-        {activeTab === 'Videos' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {profileVideos.map((video) => (
-              <div key={video.id} className="group cursor-pointer">
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-neutral-900">
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <div className="bg-render-red/90 rounded-full p-3">
-                      <Play className="text-white" size={24} fill="white" />
-                    </div>
-                  </div>
-                  <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-medium">
-                    {video.duration}
-                  </span>
+        {/* Content */}
+        {activeTab === 'videos' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {creatorVideos.map((video) => (
+              <div
+                key={video.id}
+                className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden hover:border-red-600/50 transition cursor-pointer group"
+              >
+                <div className="aspect-video bg-gradient-to-br from-neutral-800 to-black flex items-center justify-center text-5xl group-hover:scale-110 transition">
+                  {video.thumbnail}
                 </div>
-                <h3 className="text-white font-semibold text-sm leading-snug mt-3 line-clamp-2 group-hover:text-red-400 transition-colors">
-                  {video.title}
-                </h3>
-                <p className="text-gray-500 text-xs mt-1">
-                  {formatViews(video.views)} views • {video.uploaded}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'Shorts' && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="relative aspect-[9/16] rounded-xl overflow-hidden bg-neutral-900">
-                  <img
-                    src={profileVideos[i - 1]?.thumbnail}
-                    alt={`Short ${i}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <p className="text-white text-xs font-bold">Short #{i}</p>
-                    <div className="flex items-center gap-1 text-gray-300 text-xs mt-1">
-                      <Heart size={12} fill="currentColor" />
-                      {formatViews(100000 * i)} likes
-                    </div>
-                  </div>
+                <div className="p-3">
+                  <p className="text-white font-semibold text-sm line-clamp-2">{video.title}</p>
+                  <p className="text-gray-400 text-xs mt-1">👁️ {video.views}</p>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {activeTab === 'About' && (
-          <div className="max-w-2xl space-y-6">
-            <div>
-              <h3 className="text-white font-bold text-lg mb-3">Description</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">{profileData.bio}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-                <h4 className="text-gray-400 text-xs font-semibold uppercase mb-2">Subscribers</h4>
-                <p className="text-white text-2xl font-black">{formatViews(profileData.subscribers)}</p>
+        {activeTab === 'playlists' && (
+          <div className="space-y-4">
+            {playlists.map((playlist) => (
+              <div
+                key={playlist.id}
+                className="bg-neutral-900 border border-neutral-800 rounded-lg p-6 hover:border-red-600/50 transition cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-4xl">📋</div>
+                    <div>
+                      <h3 className="text-white font-bold text-lg">{playlist.name}</h3>
+                      <p className="text-gray-400 text-sm">{playlist.videos} videos</p>
+                    </div>
+                  </div>
+                  <span className="text-gray-400">→</span>
+                </div>
               </div>
-              <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-                <h4 className="text-gray-400 text-xs font-semibold uppercase mb-2">Total Views</h4>
-                <p className="text-white text-2xl font-black">{formatViews(profileData.totalViews)}</p>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'about' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+              <h3 className="text-white font-bold text-lg mb-4">About Creator</h3>
+              <p className="text-gray-300 mb-4">{profileData.bio}</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>📧 Contact: contact@creatorpro.com</p>
+                <p>🔗 Render Studio: {profileData.renderStudioLink}</p>
+                <p>💼 Business: Available for collaborations</p>
               </div>
             </div>
-            <div className="bg-gradient-to-r from-red-600/20 to-red-900/10 border border-red-600/30 rounded-xl p-5">
-              <h4 className="text-white font-bold mb-2 flex items-center gap-2">
-                <Award className="text-render-red" size={20} />
-                Play Button: {profileData.playButton}
-              </h4>
-              <p className="text-gray-300 text-sm">
-                Earned the {profileData.playButton} Play Button for reaching 1,000 subscribers.
-                Next milestone: Bronze at 10,000 subscribers.
-              </p>
+
+            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+              <h3 className="text-white font-bold text-lg mb-4">Monetization Status</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Status</span>
+                  <span className="text-green-600 font-bold">✓ Monetized</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Play Button</span>
+                  <span className="text-white font-bold">🏆 Diamond</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Payout</span>
+                  <span className="text-green-600 font-bold">90%</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default Profile;
