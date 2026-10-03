@@ -1,105 +1,101 @@
-const express = require('express');
+import express from 'express';
+
 const router = express.Router();
 
-/**
- * Video Routes
- * POST /videos/upload - Upload video
- * GET /videos/:id - Get video details
- * GET /videos/trending - Get trending videos
- * DELETE /videos/:id - Delete video
- */
+const videos = [
+  {
+    id: 'video_1',
+    title: 'How to Make Money on Render - Full Tutorial 2025',
+    description: 'A creator-focused guide to monetizing in Render.',
+    category: 'education',
+    userId: 'user123',
+    views: 1250000,
+    likes: 85000,
+    duration: '12:45',
+    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
+    uploadedAt: new Date().toISOString(),
+  },
+  {
+    id: 'video_2',
+    title: 'Render Shorts Challenge - Win $10K Prize 🏆',
+    description: 'Creator challenge and platform rewards.',
+    category: 'gaming',
+    userId: 'user123',
+    views: 5680000,
+    likes: 320000,
+    duration: 'Short',
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
+    uploadedAt: new Date().toISOString(),
+  },
+];
 
-// Mock database
-const videos = [];
+router.post('/upload', (req, res) => {
+  const { title, description, category, userId } = req.body;
 
-// POST /videos/upload
-router.post('/upload', async (req, res) => {
-  try {
-    const { title, description, category, userId } = req.body;
-    const file = req.files?.video;
-
-    if (!title || !userId || !file) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const videoId = `video_${Date.now()}`;
-    const newVideo = {
-      id: videoId,
-      title,
-      description,
-      category,
-      userId,
-      views: 0,
-      likes: 0,
-      duration: '0:00',
-      thumbnail: 'https://via.placeholder.com/320x180',
-      uploadedAt: new Date()
-    };
-
-    videos.push(newVideo);
-
-    res.status(201).json({
-      success: true,
-      message: 'Video uploaded successfully',
-      video: newVideo
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!title || !userId) {
+    return res.status(400).json({ success: false, error: 'Title and userId are required.' });
   }
+
+  const videoId = `video_${Date.now()}`;
+  const newVideo = {
+    id: videoId,
+    title,
+    description: description || '',
+    category: category || 'general',
+    userId,
+    views: 0,
+    likes: 0,
+    duration: '0:00',
+    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
+    uploadedAt: new Date().toISOString(),
+  };
+
+  videos.push(newVideo);
+
+  return res.status(201).json({
+    success: true,
+    message: 'Video uploaded successfully.',
+    video: newVideo,
+  });
 });
 
-// GET /videos/:id
 router.get('/:id', (req, res) => {
-  try {
-    const video = videos.find(v => v.id === req.params.id);
+  const video = videos.find((item) => item.id === req.params.id);
 
-    if (!video) {
-      return res.status(404).json({ error: 'Video not found' });
-    }
-
-    res.json({
-      success: true,
-      video
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!video) {
+    return res.status(404).json({ success: false, error: 'Video not found.' });
   }
+
+  return res.json({
+    success: true,
+    video,
+  });
 });
 
-// GET /videos/trending
 router.get('/trending', (req, res) => {
-  try {
-    const trending = videos
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 20);
+  const trending = [...videos]
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 20);
 
-    res.json({
-      success: true,
-      videos: trending
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  return res.json({
+    success: true,
+    videos: trending,
+  });
 });
 
-// DELETE /videos/:id
 router.delete('/:id', (req, res) => {
-  try {
-    const index = videos.findIndex(v => v.id === req.params.id);
+  const index = videos.findIndex((video) => video.id === req.params.id);
 
-    if (index === -1) {
-      return res.status(404).json({ error: 'Video not found' });
-    }
-
-    videos.splice(index, 1);
-
-    res.json({
-      success: true,
-      message: 'Video deleted successfully'
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (index === -1) {
+    return res.status(404).json({ success: false, error: 'Video not found.' });
   }
+
+  videos.splice(index, 1);
+
+  return res.json({
+    success: true,
+    message: 'Video deleted successfully.',
+  });
 });
 
-module.exports = router;
+export default router;

@@ -1,90 +1,82 @@
-const express = require('express');
+import express from 'express';
+
 const router = express.Router();
 
-/**
- * User Routes
- * GET /users/:id - Get user profile
- * PUT /users/:id - Update profile
- * GET /users/:id/videos - Get user videos
- * GET /users/:id/stats - Get user statistics
- */
+const users = [
+  {
+    id: 'user123',
+    username: 'CreatorPro',
+    displayName: 'Creator Pro - Content Master',
+    email: 'creator@render.com',
+    bio: 'Making awesome content on Render',
+    subscribers: 2500,
+    totalViews: 15400000,
+    videos: 156,
+    verified: true,
+    joinDate: '2024-01-15',
+    website: 'www.creatorpro.com',
+    location: 'San Francisco, CA',
+    isMonetized: true,
+  },
+];
 
-// Mock database
-const users = [];
-
-// GET /users/:id
 router.get('/:id', (req, res) => {
-  try {
-    // Mock user data
-    const user = {
-      id: req.params.id,
-      username: 'CreatorPro',
-      displayName: 'Creator Pro - Content Master',
-      email: 'creator@render.com',
-      bio: 'Making awesome content on Render',
-      subscribers: 2500,
-      totalViews: 15400000,
-      videos: 156,
-      verified: true,
-      joinDate: '2024-01-15',
-      website: 'www.creatorpro.com',
-      location: 'San Francisco, CA',
-      isMonetized: true
-    };
+  const user = users.find((entry) => entry.id === req.params.id);
 
-    res.json({
-      success: true,
-      user
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
   }
+
+  return res.json({
+    success: true,
+    user,
+  });
 });
 
-// PUT /users/:id
 router.put('/:id', (req, res) => {
-  try {
-    const { username, bio, website, location } = req.body;
+  const { username, bio, website, location } = req.body;
+  const userIndex = users.findIndex((entry) => entry.id === req.params.id);
 
-    const updatedUser = {
-      id: req.params.id,
-      username: username || 'CreatorPro',
-      bio: bio || 'Making awesome content on Render',
-      website: website || 'www.creatorpro.com',
-      location: location || 'San Francisco, CA'
-    };
-
-    res.json({
-      success: true,
-      message: 'Profile updated successfully',
-      user: updatedUser
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (userIndex === -1) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
   }
+
+  const currentUser = users[userIndex];
+  users[userIndex] = {
+    ...currentUser,
+    username: username || currentUser.username,
+    bio: bio || currentUser.bio,
+    website: website || currentUser.website,
+    location: location || currentUser.location,
+  };
+
+  return res.json({
+    success: true,
+    message: 'Profile updated successfully.',
+    user: users[userIndex],
+  });
 });
 
-// GET /users/:id/stats
 router.get('/:id/stats', (req, res) => {
-  try {
-    const stats = {
-      userId: req.params.id,
-      subscribers: 2500,
-      totalViews: 15400000,
-      totalVideos: 156,
+  const user = users.find((entry) => entry.id === req.params.id);
+
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
+  }
+
+  return res.json({
+    success: true,
+    stats: {
+      userId: user.id,
+      subscribers: user.subscribers,
+      totalViews: user.totalViews,
+      totalVideos: user.videos,
       avgViewDuration: 3.2,
       engagementRate: 8.5,
       totalEarnings: 12500,
-      monthlyEarnings: 2150
-    };
-
-    res.json({
-      success: true,
-      stats
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+      monthlyEarnings: 2150,
+    },
+  });
 });
 
-module.exports = router;
+export default router;

@@ -1,52 +1,37 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+import { env } from '../config/env.js';
+
 const router = express.Router();
-
-/**
- * Authentication Routes
- * POST /auth/signup - Register new user
- * POST /auth/login - Login user
- * POST /auth/logout - Logout user
- * POST /auth/refresh - Refresh JWT token
- */
-
-// Mock database for demo
 const users = [];
-const JWT_SECRET = process.env.JWT_SECRET || 'render-secret-key-2024';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'render-refresh-key-2024';
 
-// Helper: Generate tokens
 const generateTokens = (userId) => {
-  const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, { expiresIn: '7d' });
+  const accessToken = jwt.sign({ userId }, env.JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId }, env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+
   return { accessToken, refreshToken };
 };
 
-// POST /auth/signup
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
 
-    // Validation
     if (!email || !username || !password) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ success: false, error: 'Email, username, and password are required.' });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+      return res.status(400).json({ success: false, error: 'Password must be at least 8 characters long.' });
     }
 
-    // Check if user exists
-    const existingUser = users.find(u => u.email === email || u.username === username);
+    const existingUser = users.find((user) => user.email === email || user.username === username);
     if (existingUser) {
-      return res.status(409).json({ error: 'User already exists' });
+      return res.status(409).json({ success: false, error: 'User already exists.' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
+    const hashedPassword = await bcrypt.hash(password, 12);
     const userId = `user_${Date.now()}`;
     const newUser = {
       id: userId,
@@ -56,98 +41,92 @@ router.post('/signup', async (req, res) => {
       subscribers: 0,
       totalViews: 0,
       isMonetized: false,
-      createdAt: new Date()
+      createdAt: new Date().toISOString(),
     };
 
     users.push(newUser);
+    const tokens = generateTokens(userId);
 
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(userId);
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: 'User registered successfully.',
       user: {
         id: userId,
         email,
-        username
+        username,
+        subscribers: 0,
+        isMonetized: false,
       },
-      tokens: { accessToken, refreshToken }
+      tokens,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-// POST /auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password required' });
+      return res.status(400).json({ success: false, error: 'Email and password are required.' });
     }
 
-    // Find user
-    const user = users.find(u => u.email === email);
+    const user = users.find((entry) => entry.email === email);
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ success: false, error: 'Invalid credentials.' });
     }
 
-    // Verify password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ success: false, error: 'Invalid credentials.' });
     }
 
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user.id);
+    const tokens = generateTokens(user.id);
 
-    res.json({
+    return res.json({
       success: true,
-      message: 'Login successful',
+      message: 'Login successful.',
       user: {
         id: user.id,
         email: user.email,
         username: user.username,
         subscribers: user.subscribers,
-        isMonetized: user.isMonetized
+        totalViews: user.totalViews,
+        isMonetized: user.isMonetized,
       },
-      tokens: { accessToken, refreshToken }
+      tokens,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 });
 
-// POST /auth/refresh
-router.post('/refresh', (req, res) => {
+router.post('/refresh', (req, res, next) => {
   try {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({ error: 'Refresh token required' });
+      return res.status(400).json({ success: false, error: 'Refresh token is required.' });
     }
 
-    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(decoded.userId);
+    const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET);
+    const tokens = generateTokens(decoded.userId);
 
-    res.json({
+    return res.json({
       success: true,
-      tokens: { accessToken, refreshToken: newRefreshToken }
+      tokens,
     });
   } catch (error) {
-    res.status(401).json({ error: 'Invalid refresh token' });
+    return res.status(401).json({ success: false, error: 'Invalid refresh token.' });
   }
 });
 
-// POST /auth/logout
 router.post('/logout', (req, res) => {
   res.json({
     success: true,
-    message: 'Logged out successfully'
+    message: 'Logged out successfully.',
   });
 });
 
-module.exports = router;
+export default router;
